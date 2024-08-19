@@ -1,6 +1,3 @@
-// scripts.js
-
-// Global variables
 let cards = [
     '2@', '2#', '2^', '2*', '3@', '3#', '3^', '3*',
     '4@', '4#', '4^', '4*', '5@', '5#', '5^', '5*',
@@ -11,7 +8,7 @@ let cards = [
     'A@', 'A#', 'A^', 'A*'
 ];
 
-let playerHands = []; // Global variable to hold player hands
+let playerHands = [];
 
 function shuffleAndDistribute() {
     const numPlayers = parseInt(document.getElementById('numPlayers').value, 10);
@@ -21,19 +18,15 @@ function shuffleAndDistribute() {
         return;
     }
     
-    // Shuffle the cards
     sortRandom();
     
-    // Initialize player hands
     playerHands = Array.from({ length: numPlayers }, () => []);
     
-    // Distribute cards to players
     for (let i = 0; i < cards.length; i++) {
         const playerIndex = i % numPlayers;
         playerHands[playerIndex].push(cards[i]);
     }
     
-    // Display player hands
     let resultHTML = '<h3>Player Hands:</h3>';
     playerHands.forEach((hand, index) => {
         resultHTML += `<h4>Player ${index + 1}:</h4><table><tr>`;
@@ -47,7 +40,6 @@ function shuffleAndDistribute() {
     document.getElementById('result-text').innerHTML = resultHTML;
 }
 
-// Show all cards
 function showAllCards() {
     const resultElement = document.getElementById('result-text');
     let resultHTML = '<h3>All Cards:</h3><table><tr>';
@@ -64,31 +56,32 @@ function showAllCards() {
 function sortRandom() {
     for (let i = cards.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]]; // Swap elements
+        [cards[i], cards[j]] = [cards[j], cards[i]]; 
     }
-    // Optionally, display the shuffled cards
-    showAllCards(); // Call showAllCards to update the display if needed
+	
+    showAllCards(); 
 }
 
-// Function to show the winner
 function showWinner() {
     if (playerHands.length === 0) {
         alert('Please distribute the cards first.');
         return;
     }
 
-    // Reset highest score
     highestScore = 0;
 
-    // Define symbol values
     const symbolValues = {
+		'!': 1,
         '@': 2,
         '#': 3,
-        '^': 4,
-        '*': 8
+		'$': 4,
+		'%': 5,
+        '^': 6,
+		'&': 7,
+        '*': 8,
+		'(': 9
     };
 
-    // Display player hands
     let resultHTML = '<h3>Player Hands:</h3>';
     playerHands.forEach((hand, index) => {
         resultHTML += `<h4>Player ${index + 1}:</h4><table><tr>`;
@@ -99,7 +92,6 @@ function showWinner() {
         resultHTML += '</tr></table>';
     });
 
-    // Calculate player scores and reasons
     let playerScores = playerHands.map((hand, index) => {
         let scoreMap = {};
         hand.forEach(card => {
@@ -110,7 +102,6 @@ function showWinner() {
         let maxAlphanumeric = Object.keys(scoreMap).reduce((a, b) => scoreMap[a] > scoreMap[b] ? a : b, '');
         let maxScore = scoreMap[maxAlphanumeric] || 0;
 
-        // Update global highest score
         if (maxScore > highestScore) {
             highestScore = maxScore;
         }
@@ -125,7 +116,6 @@ function showWinner() {
         };
     });
 
-    // Calculate final scores including symbol values
     playerScores.forEach(player => {
         if (player.score === highestScore) {
             player.score += player.symbolValue;
@@ -135,11 +125,9 @@ function showWinner() {
         }
     });
 
-    // Determine the winner
     let winnerIndex = playerScores.findIndex(player => player.score === Math.max(...playerScores.map(p => p.score)));
     let winnerMessage = winnerIndex >= 0 ? `Player ${winnerIndex + 1} is the winner!` : "No winner found.";
 
-    // Display results
     resultHTML += '<h3>Results:</h3>';
     playerScores.forEach(player => {
         resultHTML += `<h4>Player ${player.playerIndex + 1}:</h4>`;
